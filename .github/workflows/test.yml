@@ -13,4 +13,4 @@ jobs:
     with:
       go-version: '1.24'
       use-docker-compose: true
-      compose-file: 'docker-compose.test.yml'
+      compose-file: 'docker-compose.test.yaml'
