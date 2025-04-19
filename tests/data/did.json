@@ -1,0 +1,22 @@
+{
+	"@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/suites/jws-2020/v1",
+    "https://w3id.org/security/suites/ed25519-2020/v1"
+  ],
+  "id": "did:example:123456789abcdefghi",
+  
+  "verificationMethod": [
+    {
+      "id":"123456",
+      "type":"JsonWebKey2020",
+      "publicKeyJwk": {
+        "kty": "RSA",
+        "e": "AQAB",
+        "use": "sig",
+        "kid": "123456",
+        "alg": "PS256",
+        "n": "qZGw4JGDW5-HLfI68pIYX76YCTSstdLbv-khoEH7kyRumgnunl79utS1JsM-X94_DF4YcefZ0fHvUsp6DP4CfDJCsYBBykp1e_KqFpdbrPbTidaMLDBypkYcW1jB3pZvlSvk4JlW_o_mX98b70C_EjzcJZjnUk8enS2o8yEI7RFMD6mmL2Nq_dAmT_-2nSsr3mmwxvW6km21kWKU6wMx7Q_F-2Zqv7XaOzWWL96MJnCRtYne-pG04bQZokBKXxqHUhByzGhwx3kQ8Frf2mBXWnzR4l-XsdrgPHdRdCHfx0pA2Gj_hDqYYQo0iQFUeD5ydKCdEj_BQ9Y9QLPrhlJxzQ"
+    }}
+  ]
+  }

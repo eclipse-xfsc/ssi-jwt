@@ -1,0 +1,6 @@
+{
+
+    "go.testEnvVars": {
+        "DID_RESOLVER":"http://localhost:8080"
+    }
+}
