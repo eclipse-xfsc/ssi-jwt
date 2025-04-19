@@ -38,7 +38,7 @@ func TestCustomSignerAndVerifier(t *testing.T) {
 	}
 
 	self.EnableCryptoProvider(provider, true, true)
-
+	defer self.DisableCryptoProvider(true, true)
 	tok, err := jwt.NewBuilder().
 		Issuer(`github.com/lestrrat-go/jwx`).
 		IssuedAt(time.Now()).
@@ -63,8 +63,6 @@ func TestCustomSignerAndVerifier(t *testing.T) {
 	if tok2.Issuer() != tok.Issuer() || err != nil {
 		t.Error()
 	}
-
-	self.DisableCryptoProvider()
 }
 
 func TestCustomSignerAndVerifierWithVeriferDisabled(t *testing.T) {
@@ -93,7 +91,6 @@ func TestCustomSignerAndVerifierWithVeriferDisabled(t *testing.T) {
 	}
 
 	self.EnableCryptoProvider(provider, true, false)
-
 	tok, err := jwt.NewBuilder().
 		Issuer(`github.com/lestrrat-go/jwx`).
 		IssuedAt(time.Now()).
@@ -113,7 +110,7 @@ func TestCustomSignerAndVerifierWithVeriferDisabled(t *testing.T) {
 		t.Error()
 	}
 
-	self.DisableCryptoProvider()
+	self.DisableCryptoProvider(true, false)
 
 	_, err = jwt.Parse(signed, jwt.WithKey(jwa.PS256, "test/:testK"))
 

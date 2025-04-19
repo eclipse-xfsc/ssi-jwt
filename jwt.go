@@ -18,8 +18,6 @@ import (
 )
 
 var fetchers map[string]types.KeyFetcher = make(map[string]types.KeyFetcher)
-var verify = false
-var sign = false
 
 func RegisterFetcher(id string, fetcher types.KeyFetcher) {
 	fetchers[id] = fetcher
@@ -34,8 +32,6 @@ func UnregisterFetcher(id string) {
 }
 
 func EnableCryptoProvider(cryptoprovider cryptoCore.CryptoProvider, sign bool, verify bool) {
-	sign = sign
-	verify = verify
 	new(types.SignerInterceptor).CreateInterceptor(jwa.PS256, cryptoprovider, sign, verify)
 	new(types.SignerInterceptor).CreateInterceptor(jwa.PS384, cryptoprovider, sign, verify)
 	new(types.SignerInterceptor).CreateInterceptor(jwa.PS512, cryptoprovider, sign, verify)
@@ -46,7 +42,7 @@ func EnableCryptoProvider(cryptoprovider cryptoCore.CryptoProvider, sign bool, v
 	new(types.SignerInterceptor).CreateInterceptor(jwa.SignatureAlgorithm(jwa.Ed25519), cryptoprovider, sign, verify)
 }
 
-func DisableCryptoProvider() {
+func DisableCryptoProvider(sign bool, verify bool) {
 
 	if verify {
 		jws.UnregisterVerifier(jwa.PS256)
@@ -80,7 +76,6 @@ func DisableCryptoProvider() {
 		jwa.UnregisterSignatureAlgorithm(jwa.EdDSA)
 		jwa.UnregisterSignatureAlgorithm(jwa.SignatureAlgorithm(jwa.Ed25519))
 	}
-
 }
 
 func Parse(tokenString string, options ...ljwt.ParseOption) (ljwt.Token, error) {

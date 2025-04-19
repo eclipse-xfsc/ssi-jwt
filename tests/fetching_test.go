@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/eclipse-xfsc/did-core"
 	jwt "github.com/eclipse-xfsc/ssi-jwt"
 	"github.com/eclipse-xfsc/ssi-jwt/fetcher"
 	"github.com/spf13/viper"
@@ -29,7 +30,7 @@ func createJWKSServer(filename string) (*httptest.Server, error) {
 	}
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "Http Response:%s", string(data))
+		fmt.Fprintf(w, "%s", string(data))
 	}))
 
 	return srv, nil
@@ -47,13 +48,14 @@ func createDIDServer() (*httptest.Server, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "Http Response:%s", string(data))
+		fmt.Fprintf(w, "%s", string(data))
 	}))
 
 	viper.SetDefault("DID_RESOLVER", srv.URL)
-
+	os.Setenv("DID_RESOLVER", srv.URL)
 	return srv, nil
 }
 
@@ -133,14 +135,15 @@ func TestParseRequestWithJWKsignedByDID(t *testing.T) {
 	if err != nil {
 		t.Error()
 	}
-
+	s, _ := did.ToDidWeb(didServer.URL, false)
 	didFetcher := new(fetcher.DidFetcher)
-	err = didFetcher.Initialize([]string{"did:web:blub"}, time.Second)
+	err = didFetcher.Initialize([]string{s}, time.Second)
 	if err != nil {
 		t.Error()
 	}
 
 	jwt.RegisterFetcher("DID1", didFetcher)
+
 	signed, err, _ := CreateTestJWK(t, false)
 	if err != nil {
 		fmt.Printf("failed to sign token: %s\n", err)

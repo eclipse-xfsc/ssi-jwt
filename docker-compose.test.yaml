@@ -17,9 +17,9 @@ services:
       timeout: 5s
       retries: 5
     environment:
-       uniresolver_web_driver_url_did_jwk:  http://host.docker.internal:8134
-       uniresolver_web_driver_url_did_peer: http://host.docker.internal:8083
-       uniresolver_web_driver_url_did_web:  http://host.docker.internal:8134
+       uniresolver_web_driver_url_did_jwk:  http://did-jwk-driver:8134
+       uniresolver_web_driver_url_did_peer: http://uni-resolver-driver-did-uport:8083
+       uniresolver_web_driver_url_did_web:  http://did-jwk-driver:8134
   uni-resolver-driver-did-uport:
     image: uport/uni-resolver-driver-did-uport:4.3.0
     ports:
