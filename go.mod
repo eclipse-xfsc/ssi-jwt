@@ -8,7 +8,7 @@ require (
 	github.com/eclipse-xfsc/crypto-provider-core v1.3.2
 	github.com/eclipse-xfsc/did-core v1.0.2
 	github.com/lestrrat-go/jwx/v2 v2.1.5
-	github.com/madflojo/tasks v1.1.0
+	github.com/madflojo/tasks v1.2.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.20.1
 )
@@ -24,7 +24,7 @@ require (
 	github.com/lestrrat-go/iter v1.0.2 // indirect
 	github.com/lestrrat-go/option v1.0.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
-	github.com/rs/xid v1.5.0 // indirect
+	github.com/rs/xid v1.6.0 // indirect
 	github.com/sagikazarmark/locafero v0.9.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
