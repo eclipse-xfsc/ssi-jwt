@@ -1,12 +1,10 @@
 module github.com/eclipse-xfsc/ssi-jwt
 
-go 1.24.0
-
-toolchain go1.24.2
+go 1.23.0
 
 require (
-	github.com/eclipse-xfsc/crypto-provider-core v1.4.1
-	github.com/eclipse-xfsc/did-core v1.0.2
+	github.com/eclipse-xfsc/crypto-provider-core v1.4.1-goarchv1230
+	github.com/eclipse-xfsc/did-core v1.0.2-goarchv1230
 	github.com/lestrrat-go/jwx/v2 v2.1.5
 	github.com/madflojo/tasks v1.2.1
 	github.com/sirupsen/logrus v1.9.3
