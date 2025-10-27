@@ -6,8 +6,8 @@ github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0 h1:NMZiJj8QnKe1LgsbDayM4UoHwbvw
 github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0/go.mod h1:ZXNYxsqcloTdSy/rNShjYzMhyjf0LaoftYK0p+A3h40=
 github.com/eclipse-xfsc/crypto-provider-core v1.4.1 h1:qRPfErTz4b2ea4QnFuRBLHyVXyEkynTnwtzZ1YL0E5I=
 github.com/eclipse-xfsc/crypto-provider-core v1.4.1/go.mod h1:dkIbKR46k3rwBY85gpgLbElrd/7/S78oKH8D/E1Rl+4=
-github.com/eclipse-xfsc/did-core v1.0.2 h1:UDqmuBqqaO07jSqW7RhjNkRpENDGJgJ0GderaKNO8kM=
-github.com/eclipse-xfsc/did-core v1.0.2/go.mod h1:pNjlLRKCRzyK7q4GtjnHeJKz74l6ooJt8nKPE86BGm0=
+github.com/eclipse-xfsc/did-core v1.1.0 h1:qyJhqyTQ7Svfq9sJ0R5XJBdbfq5OWKUyLf2BGOgMgRg=
+github.com/eclipse-xfsc/did-core v1.1.0/go.mod h1:phsq2M1icllbtRxENojD6QVtcpZmdiu2T9MSuu2d9ac=
 github.com/frankban/quicktest v1.14.6 h1:7Xjx+VpznH+oBnejlPUj8oUpdxnVs4f8XU8WnHkI4W8=
 github.com/frankban/quicktest v1.14.6/go.mod h1:4ptaffx2x8+WTWXmUCuVU6aPUX1/Mz7zb5vbUoiM6w0=
 github.com/fsnotify/fsnotify v1.9.0 h1:2Ml+OJNzbYCTzsxtv8vKSFD9PbJjmhYF14k/jKC7S9k=
@@ -30,8 +30,8 @@ github.com/lestrrat-go/httprc v1.0.6 h1:qgmgIRhpvBqexMJjA/PmwSvhNk679oqD1RbovdCG
 github.com/lestrrat-go/httprc v1.0.6/go.mod h1:mwwz3JMTPBjHUkkDv/IGJ39aALInZLrhBp0X7KGUZlo=
 github.com/lestrrat-go/iter v1.0.2 h1:gMXo1q4c2pHmC3dn8LzRhJfP1ceCbgSiT9lUydIzltI=
 github.com/lestrrat-go/iter v1.0.2/go.mod h1:Momfcq3AnRlRjI5b5O8/G5/BvpzrhoFTZcn06fEOPt4=
-github.com/lestrrat-go/jwx/v2 v2.1.5 h1:PQI5gzadLfJ22ckLrejPVX6eGXKM4M4eGi5fW2jjA3o=
-github.com/lestrrat-go/jwx/v2 v2.1.5/go.mod h1:Y722kU5r/8mV7fYDifjug0r8FK8mZdw0K0GpJw/l8pU=
+github.com/lestrrat-go/jwx/v2 v2.1.6 h1:hxM1gfDILk/l5ylers6BX/Eq1m/pnxe9NBwW6lVfecA=
+github.com/lestrrat-go/jwx/v2 v2.1.6/go.mod h1:Y722kU5r/8mV7fYDifjug0r8FK8mZdw0K0GpJw/l8pU=
 github.com/lestrrat-go/option v1.0.1 h1:oAzP2fvZGQKWkvHa1/SAcFolBEca1oN+mQ7eooNBEYU=
 github.com/lestrrat-go/option v1.0.1/go.mod h1:5ZHFbivi4xwXxhxY9XHDe2FHo6/Z7WWmtT7T5nBBp3I=
 github.com/madflojo/tasks v1.2.1 h1:0HMN1RCVf6yDjrlIbthkET1KCB+gxknQG3/SLO+HHj4=
