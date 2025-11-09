@@ -13,8 +13,8 @@ import (
 )
 
 func TestSelfSignedForNil(t *testing.T) {
-	self.ParseSelfSigned("", nil, nil)
-	self.ParseSelfSigned("", nil)
+	self.Parse("", nil, nil)
+	self.Parse("", nil)
 }
 
 func TestSelfSignedTokenValidation(t *testing.T) {
@@ -33,7 +33,7 @@ func TestSelfSignedTokenValidation(t *testing.T) {
 
 	t.Logf("%s\n", signed)
 
-	token, err := self.ParseSelfSigned(string(signed))
+	token, err := self.Parse(string(signed))
 
 	if err == nil || token != nil {
 		t.Error()
@@ -59,13 +59,13 @@ func TestSelfSignedTokenValidation(t *testing.T) {
 
 	t.Logf("%s\n", signed)
 
-	token, err = self.ParseSelfSigned(string(signed))
+	token, err = self.Parse(string(signed))
 
 	if err != nil || token == nil {
 		t.Error()
 	}
 
-	token, err = self.ParseSelfSigned(string(signed))
+	token, err = self.Parse(string(signed))
 
 	if err != nil || token == nil {
 		t.Error()

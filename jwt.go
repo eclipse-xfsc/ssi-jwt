@@ -91,24 +91,34 @@ func Parse(tokenString string, options ...ljwt.ParseOption) (ljwt.Token, error) 
 		alg := s.ProtectedHeaders().Algorithm()
 
 		kid := s.ProtectedHeaders().KeyID()
-
-		if strings.Contains(kid, "did:") && strings.Contains(kid, "#") {
-			id := strings.Split(kid, "#")
-			document, err := did.Resolve(id[0])
-
-			if err != nil {
-				return nil
+		key := s.ProtectedHeaders().JWK()
+		if kid == "" && key != nil {
+			if key == nil {
+				return ljwt.ErrInvalidJWT()
 			}
 
-			set := document.GetPublicKeys()
-			key, ok := set.LookupKeyID("#" + id[1])
+			ks.Key(alg, key)
+			return nil
+		} else {
 
-			if ok {
-				ks.Key(alg, key)
-			} else {
-				key, ok := set.LookupKeyID(kid)
+			if strings.Contains(kid, "did:") && strings.Contains(kid, "#") {
+				id := strings.Split(kid, "#")
+				document, err := did.Resolve(id[0])
+
+				if err != nil {
+					return nil
+				}
+
+				set := document.GetPublicKeys()
+				key, ok := set.LookupKeyID("#" + id[1])
+
 				if ok {
 					ks.Key(alg, key)
+				} else {
+					key, ok := set.LookupKeyID(kid)
+					if ok {
+						ks.Key(alg, key)
+					}
 				}
 			}
 		}
@@ -117,32 +127,6 @@ func Parse(tokenString string, options ...ljwt.ParseOption) (ljwt.Token, error) 
 	}))
 
 	options = append(options, didKidOption)
-	return ljwt.Parse([]byte(tokenString), options...)
-}
-
-func ParseSelfSigned(tokenString string, options ...ljwt.ParseOption) (ljwt.Token, error) {
-
-	if tokenString == "" {
-		return nil, ljwt.ErrInvalidJWT()
-	}
-
-	selfSignedOption := ljwt.WithKeyProvider(jws.KeyProviderFunc(func(ctx context.Context,
-		ks jws.KeySink,
-		s *jws.Signature,
-		m *jws.Message) error {
-
-		alg := s.ProtectedHeaders().Algorithm()
-
-		key := s.ProtectedHeaders().JWK()
-
-		if key == nil {
-			return ljwt.ErrInvalidJWT()
-		}
-
-		ks.Key(alg, key)
-		return nil
-	}))
-	options = append(options, selfSignedOption)
 	return ljwt.Parse([]byte(tokenString), options...)
 }
 
