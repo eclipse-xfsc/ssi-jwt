@@ -12,6 +12,8 @@ github.com/eclipse-xfsc/did-core/v2 v2.0.1 h1:ovWt+QRwR1uOPhYldpD/FDcr4/LtOfsmQf
 github.com/eclipse-xfsc/did-core/v2 v2.0.1/go.mod h1:NxstHxpcI9E/o+TqMZYnSeAViuCMv0DAsAi318e430Q=
 github.com/eclipse-xfsc/did-core/v2 v2.0.2 h1:TegzkU6m3iSI7laK3H1miEQHL0e6UCtomMHib49TpMw=
 github.com/eclipse-xfsc/did-core/v2 v2.0.2/go.mod h1:NxstHxpcI9E/o+TqMZYnSeAViuCMv0DAsAi318e430Q=
+github.com/eclipse-xfsc/did-core/v2 v2.1.0 h1:56fifKCHqw2WrCxBC3PERRh0Qqv+rd9gg+9QRYADnDU=
+github.com/eclipse-xfsc/did-core/v2 v2.1.0/go.mod h1:JvGH0Au3l53zPJ4ear8OOVuInjeJ/G+olYyLQAj5g/c=
 github.com/frankban/quicktest v1.14.6 h1:7Xjx+VpznH+oBnejlPUj8oUpdxnVs4f8XU8WnHkI4W8=
 github.com/frankban/quicktest v1.14.6/go.mod h1:4ptaffx2x8+WTWXmUCuVU6aPUX1/Mz7zb5vbUoiM6w0=
 github.com/fsnotify/fsnotify v1.9.0 h1:2Ml+OJNzbYCTzsxtv8vKSFD9PbJjmhYF14k/jKC7S9k=

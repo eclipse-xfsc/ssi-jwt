@@ -14,7 +14,7 @@ require (
 
 require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0 // indirect
-	github.com/eclipse-xfsc/did-core/v2 v2.0.2 // indirect
+	github.com/eclipse-xfsc/did-core/v2 v2.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
