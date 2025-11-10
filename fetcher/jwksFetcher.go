@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	jwt "github.com/eclipse-xfsc/ssi-jwt"
+	jwt "github.com/eclipse-xfsc/ssi-jwt/v2"
 	"github.com/lestrrat-go/jwx/v2/jwk"
 	"github.com/sirupsen/logrus"
 )

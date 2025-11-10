@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/eclipse-xfsc/did-core/v2"
-	jwt "github.com/eclipse-xfsc/ssi-jwt"
-	"github.com/eclipse-xfsc/ssi-jwt/fetcher"
+	jwt "github.com/eclipse-xfsc/ssi-jwt/v2"
+	"github.com/eclipse-xfsc/ssi-jwt/v2/fetcher"
 	"github.com/spf13/viper"
 )
 

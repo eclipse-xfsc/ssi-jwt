@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/eclipse-xfsc/crypto-provider-core/types"
-	self "github.com/eclipse-xfsc/ssi-jwt"
+	self "github.com/eclipse-xfsc/ssi-jwt/v2"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwt"
 )

@@ -1,4 +1,4 @@
-module github.com/eclipse-xfsc/ssi-jwt
+module github.com/eclipse-xfsc/ssi-jwt/v2
 
 go 1.24.0
 

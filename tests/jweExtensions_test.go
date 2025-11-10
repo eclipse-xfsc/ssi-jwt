@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	jwt "github.com/eclipse-xfsc/ssi-jwt"
+	jwt "github.com/eclipse-xfsc/ssi-jwt/v2"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwe"
 )

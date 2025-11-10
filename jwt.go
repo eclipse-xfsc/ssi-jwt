@@ -8,7 +8,7 @@ import (
 
 	cryptoCore "github.com/eclipse-xfsc/crypto-provider-core/types"
 	"github.com/eclipse-xfsc/did-core/v2"
-	"github.com/eclipse-xfsc/ssi-jwt/types"
+	"github.com/eclipse-xfsc/ssi-jwt/v2/types"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwe"
 	"github.com/lestrrat-go/jwx/v2/jwk"
