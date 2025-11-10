@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/eclipse-xfsc/did-core"
+	"github.com/eclipse-xfsc/did-core/v2"
 	jwt "github.com/eclipse-xfsc/ssi-jwt"
 	"github.com/eclipse-xfsc/ssi-jwt/fetcher"
 	"github.com/spf13/viper"

@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	cryptoCore "github.com/eclipse-xfsc/crypto-provider-core/types"
-	"github.com/eclipse-xfsc/did-core"
+	"github.com/eclipse-xfsc/did-core/v2"
 	"github.com/eclipse-xfsc/ssi-jwt/types"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwe"
@@ -92,17 +92,15 @@ func Parse(tokenString string, options ...ljwt.ParseOption) (ljwt.Token, error) 
 
 		kid := s.ProtectedHeaders().KeyID()
 		key := s.ProtectedHeaders().JWK()
+		//if no kid is provided, the jwk embedding is used, jwk used directly
 		if kid == "" && key != nil {
-			if key == nil {
-				return ljwt.ErrInvalidJWT()
-			}
-
 			ks.Key(alg, key)
 			return nil
 		} else {
-
+			//direct key reference to did doc
 			if strings.Contains(kid, "did:") && strings.Contains(kid, "#") {
 				id := strings.Split(kid, "#")
+
 				document, err := did.Resolve(id[0])
 
 				if err != nil {
@@ -120,6 +118,8 @@ func Parse(tokenString string, options ...ljwt.ParseOption) (ljwt.Token, error) 
 						ks.Key(alg, key)
 					}
 				}
+			} else {
+				return errors.New("kid not resolvable did with fragment")
 			}
 		}
 

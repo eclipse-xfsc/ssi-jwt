@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/eclipse-xfsc/did-core"
-	"github.com/eclipse-xfsc/did-core/types"
+	"github.com/eclipse-xfsc/did-core/v2"
+	"github.com/eclipse-xfsc/did-core/v2/types"
 	jwt "github.com/eclipse-xfsc/ssi-jwt"
 	"github.com/lestrrat-go/jwx/v2/jwk"
 	"github.com/madflojo/tasks"
