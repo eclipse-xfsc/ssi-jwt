@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	cryptoCore "github.com/eclipse-xfsc/crypto-provider-core/types"
+	cryptoCore "github.com/eclipse-xfsc/crypto-provider-core/v2/types"
 	"github.com/eclipse-xfsc/did-core/v2"
 	"github.com/eclipse-xfsc/ssi-jwt/v2/types"
 	"github.com/lestrrat-go/jwx/v2/jwa"

@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/eclipse-xfsc/crypto-provider-core/types"
+	"github.com/eclipse-xfsc/crypto-provider-core/v2/types"
 )
 
 var Plugin TestCryptoProvider //export Plugin Symbol, dont

@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	cryptoCore "github.com/eclipse-xfsc/crypto-provider-core/types"
+	cryptoCore "github.com/eclipse-xfsc/crypto-provider-core/v2/types"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jws"
 )
