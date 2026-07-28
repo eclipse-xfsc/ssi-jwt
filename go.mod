@@ -5,16 +5,16 @@ go 1.24.0
 toolchain go1.24.2
 
 require (
+	github.com/eclipse-xfsc/crypto-provider-core/v2 v2.0.0
+	github.com/eclipse-xfsc/did-core/v2 v2.1.0
 	github.com/lestrrat-go/jwx/v2 v2.1.6
 	github.com/madflojo/tasks v1.2.1
-	github.com/sirupsen/logrus v1.9.3
+	github.com/sirupsen/logrus v1.9.4
 	github.com/spf13/viper v1.20.1
 )
 
 require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0 // indirect
-	github.com/eclipse-xfsc/crypto-provider-core/v2 v2.0.0 // indirect
-	github.com/eclipse-xfsc/did-core/v2 v2.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
