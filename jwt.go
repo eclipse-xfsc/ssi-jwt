@@ -3,8 +3,11 @@ package jwt
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
+	"sync"
+	"time"
 
 	cryptoCore "github.com/eclipse-xfsc/crypto-provider-core/v2/types"
 	"github.com/eclipse-xfsc/did-core/v2"
@@ -18,6 +21,12 @@ import (
 )
 
 var fetchers map[string]types.KeyFetcher = make(map[string]types.KeyFetcher)
+
+var (
+	jwksCacheContext = context.Background()
+	jwksCache        = jwk.NewCache(jwksCacheContext)
+	jwksCacheMutex   sync.Mutex
+)
 
 func RegisterFetcher(id string, fetcher types.KeyFetcher) {
 	fetchers[id] = fetcher
@@ -167,6 +176,71 @@ func ParseRequest(r *http.Request, options ...ljwt.ParseOption) (ljwt.Token, err
 
 	keySetOption := ljwt.WithKeySet(CombineJwksSets(sets, context.Background()))
 	options = append(options, keySetOption)
+	return ljwt.ParseRequest(r, options...)
+}
+
+func ParseRequestWithJWKS(
+	r *http.Request,
+	jwksURL string,
+	options ...ljwt.ParseOption,
+) (ljwt.Token, error) {
+	if r == nil {
+		return nil, errors.New("request must not be nil")
+	}
+
+	jwksURL = strings.TrimSpace(jwksURL)
+	if jwksURL == "" {
+		return ParseRequest(r, options...)
+	}
+
+	jwksCacheMutex.Lock()
+
+	if !jwksCache.IsRegistered(jwksURL) {
+		err := jwksCache.Register(
+			jwksURL,
+			jwk.WithRefreshInterval(15*time.Minute),
+		)
+		if err != nil {
+			jwksCacheMutex.Unlock()
+			return nil, fmt.Errorf(
+				"failed to register JWKS URL %q: %w",
+				jwksURL,
+				err,
+			)
+		}
+	}
+
+	jwksCacheMutex.Unlock()
+
+	remoteSet, err := jwksCache.Get(r.Context(), jwksURL)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"failed to load JWKS from %q: %w",
+			jwksURL,
+			err,
+		)
+	}
+
+	var sets []jwk.Set
+
+	for _, fetcher := range fetchers {
+		keys, err := fetcher.GetKeys()
+		if err != nil {
+			logrus.Error(err)
+			continue
+		}
+
+		sets = append(sets, keys)
+	}
+
+	sets = append(sets, remoteSet)
+
+	keySetOption := ljwt.WithKeySet(
+		CombineJwksSets(sets, r.Context()),
+	)
+
+	options = append(options, keySetOption)
+
 	return ljwt.ParseRequest(r, options...)
 }
 
