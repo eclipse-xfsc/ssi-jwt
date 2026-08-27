@@ -26,7 +26,10 @@ var (
 	jwksCacheContext = context.Background()
 	jwksCache        = jwk.NewCache(jwksCacheContext)
 	jwksCacheMutex   sync.Mutex
+	successfulJWKS   sync.Map // map[string]jwk.Set
 )
+
+const maxJWKSFetchAttempts = 10
 
 func RegisterFetcher(id string, fetcher types.KeyFetcher) {
 	fetchers[id] = fetcher
@@ -184,6 +187,7 @@ func ParseRequestWithJWKS(
 	jwksURL string,
 	options ...ljwt.ParseOption,
 ) (ljwt.Token, error) {
+
 	if r == nil {
 		return nil, errors.New("request must not be nil")
 	}
@@ -193,34 +197,186 @@ func ParseRequestWithJWKS(
 		return ParseRequest(r, options...)
 	}
 
-	jwksCacheMutex.Lock()
+	var remoteSet jwk.Set
 
-	if !jwksCache.IsRegistered(jwksURL) {
-		err := jwksCache.Register(
-			jwksURL,
-			jwk.WithRefreshInterval(15*time.Minute),
-		)
-		if err != nil {
-			jwksCacheMutex.Unlock()
-			return nil, fmt.Errorf(
-				"failed to register JWKS URL %q: %w",
-				jwksURL,
-				err,
-			)
+	// ------------------------------------------------------------
+	// 1. Erfolgreich geladenes JWKS vorhanden?
+	//
+	// Dann KEIN Fetch mehr.
+	// ------------------------------------------------------------
+	if cached, ok := successfulJWKS.Load(jwksURL); ok {
+		set, ok := cached.(jwk.Set)
+		if ok && set != nil && set.Len() > 0 {
+			remoteSet = set
+		} else {
+			// Defensive cleanup, falls aus irgendeinem Grund
+			// ungültige Daten im Cache landen.
+			successfulJWKS.Delete(jwksURL)
 		}
 	}
 
-	jwksCacheMutex.Unlock()
+	// ------------------------------------------------------------
+	// 2. Noch kein erfolgreiches Set vorhanden -> laden.
+	// ------------------------------------------------------------
+	if remoteSet == nil {
 
-	remoteSet, err := jwksCache.Get(r.Context(), jwksURL)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"failed to load JWKS from %q: %w",
-			jwksURL,
-			err,
-		)
+		// Lock absichtlich über den gesamten Fetch-Vorgang.
+		//
+		// Dadurch verhindern wir z.B.:
+		//
+		// goroutine 1 -> fetch attempt 1..10
+		// goroutine 2 -> fetch attempt 1..10
+		// goroutine 3 -> fetch attempt 1..10
+		//
+		// für dieselbe URL.
+		jwksCacheMutex.Lock()
+
+		// Double-check:
+		// Vielleicht hat eine andere Goroutine das Set geladen,
+		// während wir auf den Lock gewartet haben.
+		if cached, ok := successfulJWKS.Load(jwksURL); ok {
+			if set, ok := cached.(jwk.Set); ok &&
+				set != nil &&
+				set.Len() > 0 {
+
+				remoteSet = set
+			}
+		}
+
+		if remoteSet == nil {
+
+			// ----------------------------------------------------
+			// URL registrieren
+			// ----------------------------------------------------
+			if !jwksCache.IsRegistered(jwksURL) {
+				err := jwksCache.Register(
+					jwksURL,
+					jwk.WithRefreshInterval(15*time.Minute),
+				)
+				if err != nil {
+					jwksCacheMutex.Unlock()
+
+					return nil, fmt.Errorf(
+						"failed to register JWKS URL %q: %w",
+						jwksURL,
+						err,
+					)
+				}
+			}
+
+			var lastErr error
+
+			// ----------------------------------------------------
+			// Maximal 10 Versuche.
+			//
+			// Refresh statt Get, damit tatsächlich erneut
+			// geladen wird und nicht ein fehlerhafter Cache-State
+			// wiederverwendet wird.
+			// ----------------------------------------------------
+			for attempt := 1; attempt <= maxJWKSFetchAttempts; attempt++ {
+
+				time.Sleep(time.Second * 2)
+				set, err := jwksCache.Refresh(
+					r.Context(),
+					jwksURL,
+				)
+
+				if err != nil {
+					lastErr = err
+
+					logrus.WithFields(logrus.Fields{
+						"jwks_url": jwksURL,
+						"attempt":  attempt,
+						"max":      maxJWKSFetchAttempts,
+					}).WithError(err).Warn(
+						"failed to fetch JWKS",
+					)
+
+					continue
+				}
+
+				// HTTP 200 mit z.B.
+				//
+				// {"keys":[]}
+				//
+				// soll NICHT als erfolgreicher Fetch gelten.
+				if set == nil {
+					lastErr = errors.New(
+						"JWKS endpoint returned nil key set",
+					)
+
+					continue
+				}
+
+				if set.Len() == 0 {
+					lastErr = errors.New(
+						"JWKS endpoint returned empty key set",
+					)
+
+					logrus.WithFields(logrus.Fields{
+						"jwks_url": jwksURL,
+						"attempt":  attempt,
+						"max":      maxJWKSFetchAttempts,
+					}).Warn(
+						"JWKS endpoint returned empty key set",
+					)
+
+					continue
+				}
+
+				// ------------------------------------------------
+				// Erfolg.
+				//
+				// Ab jetzt wird für diese URL nie wieder gefetcht.
+				// ------------------------------------------------
+				remoteSet = set
+				successfulJWKS.Store(jwksURL, set)
+
+				logrus.WithFields(logrus.Fields{
+					"jwks_url": jwksURL,
+					"attempt":  attempt,
+					"keys":     set.Len(),
+				}).Debug(
+					"successfully fetched and cached JWKS",
+				)
+
+				break
+			}
+
+			// ----------------------------------------------------
+			// Nach 10 Versuchen immer noch kein brauchbares Set.
+			// ----------------------------------------------------
+			if remoteSet == nil {
+
+				unregisterErr := jwksCache.Unregister(jwksURL)
+
+				jwksCacheMutex.Unlock()
+
+				if unregisterErr != nil {
+					return nil, fmt.Errorf(
+						"failed to load JWKS from %q after %d attempts: %w; additionally failed to unregister JWKS URL: %v",
+						jwksURL,
+						maxJWKSFetchAttempts,
+						lastErr,
+						unregisterErr,
+					)
+				}
+
+				return nil, fmt.Errorf(
+					"failed to load JWKS from %q after %d attempts: %w",
+					jwksURL,
+					maxJWKSFetchAttempts,
+					lastErr,
+				)
+			}
+		}
+
+		jwksCacheMutex.Unlock()
 	}
 
+	// ------------------------------------------------------------
+	// 3. Andere lokale Fetcher hinzufügen
+	// ------------------------------------------------------------
 	var sets []jwk.Set
 
 	for _, fetcher := range fetchers {
@@ -230,7 +386,9 @@ func ParseRequestWithJWKS(
 			continue
 		}
 
-		sets = append(sets, keys)
+		if keys != nil {
+			sets = append(sets, keys)
+		}
 	}
 
 	sets = append(sets, remoteSet)
